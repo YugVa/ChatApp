@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<article>
+    <header>
+        <h2>{{ employee.last_name }} {{ employee.first_name }}</h2>
+    </header>
+    <p><strong>Звание:</strong> {{ employee.rank.value }}</p>
+    <p><strong>Дата приема:</strong> {{ employee.hire_date }}</p>
+    <p><strong>Дата аттестации:</strong> {{ employee.attestation_date or '—' }}</p>
+    {% if employee.photo_path %}
+    <img src="{{ employee.photo_path }}" class="employee-photo" alt="Фото">
+    {% endif %}
+</article>
+<section>
+    <h3>Обновить данные</h3>
+    <form method="post" action="/employees/{{ employee.id }}/update">
+        <label>Имя
+            <input type="text" name="first_name" value="{{ employee.first_name }}">
+        </label>
+        <label>Фамилия
+            <input type="text" name="last_name" value="{{ employee.last_name }}">
+        </label>
+        <label>Звание
+            <select name="rank">
+                {% for r in ['JUNIOR','MIDDLE','SENIOR','LEAD'] %}
+                <option value="{{ r }}" {% if employee.rank.value == r %}selected{% endif %}>{{ r }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Дата приема
+            <input type="date" name="hire_date" value="{{ employee.hire_date }}">
+        </label>
+        <label>Дата аттестации
+            <input type="date" name="attestation_date" value="{{ employee.attestation_date }}">
+        </label>
+        <button type="submit">Сохранить</button>
+    </form>
+</section>
+<section>
+    <h3>Фото</h3>
+    <form method="post" enctype="multipart/form-data" action="/employees/{{ employee.id }}/photo">
+        <input type="file" name="file" accept="image/*" required>
+        <button type="submit">Загрузить</button>
+    </form>
+</section>
+{% endblock %}

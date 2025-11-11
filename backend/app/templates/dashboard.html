@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block content %}
+{% if import_error %}
+<section class="alert">
+    <article role="alert" class="danger">Ошибка импорта: {{ import_error }}</article>
+</section>
+{% endif %}
+{% if import_created %}
+<section class="alert">
+    <article role="status" class="success">Импорт завершен: создано {{ import_created }}, обновлено {{ import_updated }}</article>
+</section>
+{% endif %}
+<section>
+    <details open>
+        <summary>Фильтры</summary>
+        <form method="get">
+            <label>Звание
+                <select name="rank">
+                    <option value="">Все</option>
+                    {% for r in ranks %}
+                    <option value="{{ r.value }}" {% if rank_filter == r.value %}selected{% endif %}>{{ r.value }}</option>
+                    {% endfor %}
+                </select>
+            </label>
+            <label>Дата приема (с)
+                <input type="date" name="hired_from" value="{{ hired_from }}">
+            </label>
+            <label>Дата приема (по)
+                <input type="date" name="hired_to" value="{{ hired_to }}">
+            </label>
+            <button type="submit">Применить</button>
+        </form>
+    </details>
+</section>
+<section class="table-wrapper">
+    <table role="grid">
+        <thead>
+            <tr>
+                <th>ФИО</th>
+                <th>Звание</th>
+                <th>Дата приема</th>
+                <th>Дата аттестации</th>
+                <th>Фото</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.last_name }} {{ employee.first_name }}</td>
+                <td>{{ employee.rank.value }}</td>
+                <td>{{ employee.hire_date }}</td>
+                <td>{{ employee.attestation_date or '—' }}</td>
+                <td>
+                    {% if employee.photo_path %}
+                    <img src="{{ employee.photo_path }}" class="employee-photo" alt="Фото">
+                    {% else %}
+                    —
+                    {% endif %}
+                </td>
+                <td><a href="/employees/{{ employee.id }}">Открыть</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+<section>
+    <h3>Новый сотрудник</h3>
+    <form method="post" action="/employees/new">
+        <label>Имя
+            <input type="text" name="first_name" required>
+        </label>
+        <label>Фамилия
+            <input type="text" name="last_name" required>
+        </label>
+        <label>Звание
+            <select name="rank" required>
+                {% for r in ranks %}
+                <option value="{{ r.value }}">{{ r.value }}</option>
+                {% endfor %}
+            </select>
+        </label>
+        <label>Дата приема
+            <input type="date" name="hire_date" required>
+        </label>
+        <label>Дата аттестации
+            <input type="date" name="attestation_date">
+        </label>
+        <button type="submit">Создать</button>
+    </form>
+</section>
+<section>
+    <h3>Импорт из Excel</h3>
+    <form method="post" action="/employees/import/xlsx" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".xlsx" required>
+        <button type="submit">Импортировать</button>
+    </form>
+    <p><a href="/employees/export">Скачать текущий список</a> (пароль: {{ settings.password_export_excel }})</p>
+</section>
+{% endblock %}
