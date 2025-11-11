@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title or 'Сотрудники' }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        body { padding: 1rem 2rem; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+        .table-wrapper { overflow-x: auto; }
+        .employee-photo { width: 140px; height: 140px; object-fit: cover; border-radius: 8px; }
+        .alert article { padding: 0.75rem 1rem; }
+        .alert .danger { border-left: 4px solid #d90429; }
+        .alert .success { border-left: 4px solid #2b9348; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>{{ title or 'Сотрудники' }}</h1>
+    {% if user %}
+    <div>
+        <strong>{{ user.full_name or user.username }}</strong>
+        <small style="margin-left: .5rem;">{{ user.role }}</small>
+    </div>
+    {% endif %}
+</header>
+<main>
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

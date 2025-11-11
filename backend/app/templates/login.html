@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+    <h2>Вход</h2>
+    <form method="post" action="/auth/login">
+        <label>Имя пользователя
+            <input type="text" name="username" required>
+        </label>
+        <label>Пароль
+            <input type="password" name="password" required>
+        </label>
+        <button type="submit">Войти</button>
+    </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+</section>
+{% endblock %}

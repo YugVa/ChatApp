@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+    <article>
+        <h2>Добро пожаловать, {{ user.full_name or user.username }}!</h2>
+        <p>Вы будете перенаправлены на панель сотрудников.</p>
+        <p><a href="/">Перейти к сотрудникам</a></p>
+    </article>
+</section>
+{% endblock %}
